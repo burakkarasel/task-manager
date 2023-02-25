@@ -2,8 +2,8 @@ const { default: mongoose } = require("mongoose");
 const Task = require("../models/task");
 const GenericResponse = require("../models/genericResponse");
 
+// list the tasks
 const getAllTasks = async (req, res) => {
-  //   const { page, limit } = req.query;
   try {
     const tasks = await Task.find();
     return res.status(200).json(new GenericResponse(true, 200, null, tasks));
@@ -12,6 +12,7 @@ const getAllTasks = async (req, res) => {
   }
 };
 
+// create a new task
 const createTask = async (req, res) => {
   try {
     const task = await Task.create(req.body);
@@ -23,6 +24,7 @@ const createTask = async (req, res) => {
   }
 };
 
+// get one task by id
 const getTaskById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -38,20 +40,15 @@ const getTaskById = async (req, res) => {
   }
 };
 
+// update task by id
 const updateTaskById = async (req, res) => {
   const { id } = req.params;
-  const { name, completed } = req.body;
   try {
-    const task = await Task.findOneAndUpdate(
-      { _id: id },
-      {
-        name: name,
-        completed: completed,
-      }
-    );
+    const task = await Task.findOneAndUpdate({ _id: id }, req.body, {
+      new: true,
+      runValidators: true,
+    });
     if (task) {
-      task.name = name;
-      task.completed = completed;
       return res.status(200).json(new GenericResponse(true, 200, null, task));
     }
     return res
@@ -62,6 +59,7 @@ const updateTaskById = async (req, res) => {
   }
 };
 
+// delete task by id
 const deleteTaskById = async (req, res) => {
   const { id } = req.params;
   try {

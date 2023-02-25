@@ -11,6 +11,7 @@ const { MONGO_URI, PORT } = process.env;
 
 // middleware to set json as base data transfer type
 app.use(express.json());
+app.use(express.static("./public"));
 
 // setting the routes
 app.use("/api/v1/tasks", tasks);
