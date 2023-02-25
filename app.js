@@ -1,6 +1,8 @@
 const express = require("express");
 const tasks = require("./routes/tasks");
 const connectDb = require("./db/connect");
+const notFound = require("./middleware/not-found");
+const errorHandlerMiddleware = require("./middleware/error-handler");
 require("dotenv").config();
 
 // initializing the app
@@ -13,8 +15,14 @@ const { MONGO_URI, PORT } = process.env;
 app.use(express.json());
 app.use(express.static("./public"));
 
-// setting the routes
+// setting the tasks routes
 app.use("/api/v1/tasks", tasks);
+
+// middleware for not existing routes
+app.use(notFound);
+
+// generic error handler middleware
+app.use(errorHandlerMiddleware);
 
 // first connects to DB if no error occurs starts listening
 (async () => {
