@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Requests\TaskRequest;
 use App\Models\Task;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,9 +36,33 @@ Route::get("/tasks", function () {
     ]);
 })->name("tasks.list");
 
-Route::get("/tasks/{id}", function (string $id) {
-    $task = Task::findOrFail($id);
+Route::view("/tasks/create", "create")->name("tasks.create");
+
+Route::get("/tasks/{task}/edit", function(Task $task) {
+    return view("edit", [
+        "task" => $task,
+    ]);
+})->name("tasks.edit");
+
+Route::get("/tasks/{task}", function (Task $task) {
     return view("task", [
         "task" => $task,
     ]);
 })->name("tasks.single");
+
+Route::post("/tasks", function(TaskRequest $request) {
+    $data = $request->validated();
+    $task = Task::create($data);
+    return redirect()->route("tasks.single", ["task" => $task->id])->with("success", "Task created successfully!");
+})->name("tasks.insert");
+
+Route::put("/tasks/{task}", function(Task $task, TaskRequest $request) {
+    $data = $request->validated();
+    $task->updateOrFail($data);
+    return redirect()->route("tasks.single", ["task" => $task->id])->with("success", "Task updated successfully!");
+})->name("tasks.update");
+
+Route::delete("/tasks/{task}", function(Task $task) {
+    $task->deleteOrFail();
+    return redirect()->route("tasks.list")->with("success", "Task deleted successfully");
+})->name("tasks.destroy");
