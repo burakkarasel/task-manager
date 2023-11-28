@@ -65,3 +65,8 @@ Route::delete("/tasks/{task}", function(Task $task) {
     $task->deleteOrFail();
     return redirect()->route("tasks.list")->with("success", "Task deleted successfully");
 })->name("tasks.destroy");
+
+Route::patch("/tasks/{task}", function(Task $task) {
+    $task->toggleCompleted();
+    return redirect()->back()->with("success", "Task updated successfully");
+})->name("tasks.toggle");
