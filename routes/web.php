@@ -29,8 +29,7 @@ Route::get("/", function () {
 });
 
 Route::get("/tasks", function () {
-    $tasks = Task::latest()
-        ->get();
+    $tasks = Task::latest()->paginate(10);
     return view("tasks", [
        "tasks" => $tasks,
     ]);
