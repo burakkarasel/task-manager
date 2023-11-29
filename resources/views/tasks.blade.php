@@ -1,18 +1,21 @@
 @extends("layouts.app")
-@section("title", "This is the tasks page")
+@section("title", "Tasks")
 @section("content")
-    <div>
-        <a href="{{route('tasks.create')}}">
+    <nav class="mb-4">
+        <a href="{{route('tasks.create')}}" class="link">
             Add Task
         </a>
-    </div>
+    </nav >
     @forelse($tasks as $task)
-        <a href="{{route('tasks.single', ['task' => $task->id])}}"> {{$task->title}}</a><br>
+        <a href="{{route('tasks.single', ['task' => $task->id])}}" @class(['line-through' => $task->completed])>
+            {{$task->title}}
+        </a>
+        <br>
     @empty
         There are no tasks!
     @endforelse
     @if($tasks->count())
-        <nav>
+        <nav class="mt-4">
             {{$tasks->links()}}
         </nav>
     @endif 
